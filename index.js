@@ -38,6 +38,25 @@ app.post('/api/genres', (req, res) => {
     res.status(201).json(genre)
 })
 
+app.put('/api/genres/:id', (req, res) => {
+    const genre = genres.find(g => g.id === parseInt(req.params.id))
+    if(!genre) return res.status(404).json({'Error':'genre not found'});
+
+    const { error } = validateGenre(req.body);
+    if(error) return res.status(400).send(error.detail[0].message);
+
+    genre.name = req.body.name
+    res.send(genre)
+})
+
+app.delete('/api/genres/:id', (req, res) => {
+    const genre = genres.find(g => g.id === parseInt(req.params.id));
+    if(!genre) return res.status(404).json({'Error':'no genre found'});
+
+    const index = genres.indexOf(genre);
+    genres.splice(index, 1)
+    res.send(genres)
+})
 
 
 // help me to validate input
