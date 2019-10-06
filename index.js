@@ -61,7 +61,7 @@ app.delete('/api/genres/:id', (req, res) => {
 
 // help me to validate input
 const validateGenre = (genre) => {
-    const schema ={
+    const schema = {
         name : Joi.string().min(4).required()
     }
     return Joi.validate(genre, schema)
