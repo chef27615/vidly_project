@@ -70,12 +70,12 @@ router.put('/:id', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    try {
+    try{
         const genre = await Genre.findByIdAndRemove(req.params.id)
-        if(!genre) return res.status(404).json({'Error':'no genre found'});
-        res.send(genres)
-    } catch(err) {
-        res.status(404).json({'WARNING':'ID DO NOT EXIST'})
+        if(!genre) return res.status(404).json({'ERROR':'ID NOT FOUND'})
+        res.send(genre)
+    }catch(err){
+        res.status(404).json({'WARNING':`${err.message}`})
     }
 })
 
