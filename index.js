@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 // imported routes
 const genres = require('./routes/genres');
 const home = require('./routes/home');
+const customers = require('./routes/customers');
 
 const app = express();
 app.use(express.json());
@@ -19,6 +20,7 @@ mongoose.connect('mongodb+srv://ray123:ray123@raycluster01-upbcw.mongodb.net/vid
 
 
 // routes in app ******
+app.use('/api/customers', customers);
 app.use('/api/genres', genres);
 app.use('/', home);
 
