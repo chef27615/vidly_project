@@ -31,40 +31,42 @@ const Customer = mongoose.model('Customer', customerSchema)
 router.get('/', async (req, res) => {
     try{
         const customer = await Customer.find().sort('name');
-        res.send(customer)
+        res.send(genres)
     }catch(err){
         res.status(404).json({'ERROR':`${err.message}`})
     }
+        
 })
 
 router.get('/:id', async (req, res) => {
-    try {
+    try{
         const customer = await Customer.findById(req.params.id)
-        if(!customer) return res.status(404).json({'ERROR':'ID do not exist'})
+        if(!customer) return res.status(404).send('Item Not Found')
         res.send(customer)
-    } catch (err) {
-        res.status(500).json({'Message' : `${err.message}`})
+    } catch(err){
+        res.status(404).json({'ERROR':'No item found in database'})
     }
 })
 
 router.post('/', async (req, res) => {
     try {
-        let customer = new Customer({name : req.body.name, phone: req.body.phone, isGold: req.body.isGold});
+        const { error } = validateCustomer(req.body);
+        if(error) return res.status(400).send(error.details[0].message)
+        let customer = new Customer({name : req.body.name});
         customer = await customer.save()
         res.status(201).json(customer)
-    } catch (err) {
-        res.status(400).json({'Message':'something is wrong here'})
+    } catch(err){
+        res.status(403).json({'WARNING':'CANNOT Create item'})
     }
+    
 })
 
-router.put('/:id', async (req, res) => {
-    try {
-        const customer = await Customer.findByIdAndUpdate(req.params.id)
-        if(!customer) return res.status(404).json({'ERROR':'ID does not exist'})
-
-    } catch (err) {
-        res.status(500).json({'Message':`${err.message}`})
+// help me to validate input
+const validateGenre = (genre) => {
+    const schema ={
+        name : Joi.string().min(4).required()
     }
-})
+    return Joi.validate(genre, schema)
+}
 
 module.exports = router
